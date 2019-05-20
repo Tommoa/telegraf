@@ -103,9 +103,11 @@ func reloadLoop(
 		}()
 
 		err := runAgent(ctx, inputFilters, outputFilters)
-		if err != nil {
+		r := <-reload
+		if err != nil && !r {
 			log.Fatalf("E! [telegraf] Error running agent: %v", err)
 		}
+		reload <- r
 	}
 }
 
